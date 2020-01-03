@@ -12,11 +12,12 @@ using System.Collections.Generic;
 
 namespace WebApplication4.Controllers
 {
+    [RoutePrefix("api/v1")]
     public class LoginController : ApiController
     {
         private DatabaseContext db = new DatabaseContext();
 
-        [Route("api/v1/user/login")]
+        [Route("login")]
         [AcceptVerbs("POST")]
         public IHttpActionResult Authenticate([FromBody] LoginRequest login)
         {
@@ -33,7 +34,7 @@ namespace WebApplication4.Controllers
 
             if (user != null)
             {
-                AuthToken token = createToken(login.Username.ToLower());
+                AuthToken token = createToken(user);
 
                 return Ok<AuthToken>(token);
             }
@@ -46,17 +47,19 @@ namespace WebApplication4.Controllers
             }
         }
 
-        private AuthToken createToken(string username)
+        private AuthToken createToken(User user)
         {
             DateTime issuedAt = DateTime.UtcNow;
             DateTime expires = DateTime.UtcNow.AddDays(90);
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            
-            List<Claim> claims = new List<Claim>();
-            claims.Add(new Claim(ClaimTypes.Role, "Admin"));
 
+            List<Claim> claims = new List<Claim>();
+            //claims.Add(new Claim(ClaimTypes.Role, "Admin"));
             //ClaimsIdentity claimsIdentity = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, username) });
+
+            claims.Add(new Claim(ClaimTypes.Role, user.Permissions[0].Name));
+            //claims.Add(new Claim(ClaimTypes.Role, user.Permissions[0].Name));
 
             const string sec = "401b09eab3c013d4ca54922bb802bec8fd5318192b0a75f201d8b3727429090fb337591abd3e44453b954555b7a0812e1081c39b740293f765eae731f5a65ed1";
             var now = DateTime.UtcNow;
@@ -70,9 +73,10 @@ namespace WebApplication4.Controllers
                 claims: claims
             );
 
-            AuthToken token = new AuthToken();
-
-            token.Token = "Bearer " + tokenHandler.WriteToken(signedToken);
+            AuthToken token = new AuthToken
+            {
+                Token = "Bearer " + tokenHandler.WriteToken(signedToken)
+            };
 
             return token;
         }

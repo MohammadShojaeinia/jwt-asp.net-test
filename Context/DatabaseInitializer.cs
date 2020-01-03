@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System.Collections.Generic;
+using System.Data.Entity;
 using WebApplication4.Models;
 
 namespace WebApplication4.Context
@@ -17,6 +18,7 @@ namespace WebApplication4.Context
             user.Book = book;
             user.Username = "mahsa123";
             user.Password = BCrypt.Net.BCrypt.HashPassword("123123");
+            user.Permissions = new List<Permission> { new Permission("Admin"), new Permission("User") };
 
             context.Users.Add(user);
             context.SaveChanges();

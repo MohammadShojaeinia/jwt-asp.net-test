@@ -6,11 +6,12 @@ using WebApplication4.Models;
 
 namespace WebApplication4.Controllers
 {
+    [RoutePrefix("api/v1/user")]
     public class UserController : ApiController
     {
         private DatabaseContext db = new DatabaseContext();
 
-        [Route("api/v1/user/list")]
+        [Route("list")]
         [AcceptVerbs("GET")]
         [Authorize(Roles = "Admin")]
         public IEnumerable<User> GetUsers()
@@ -20,11 +21,23 @@ namespace WebApplication4.Controllers
             return users;
         }
 
-        [Route("api/v1/user/register")]
+        [Route("lists")]
+        [AcceptVerbs("GET")]
+        [Authorize(Roles = "Us")]
+        public IEnumerable<User> GetUserss()
+        {
+            IEnumerable<User> users = db.Users.Select(u => u);
+
+            return users;
+        }
+
+        [Route("register")]
         [AcceptVerbs("POST")]
         public User Register([FromBody] User user)
         {
             user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
+            user.Permissions = new List<Permission> { new Permission("User") };
+
             db.Users.Add(user);
             db.SaveChanges();
             return user;

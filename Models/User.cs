@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -15,7 +15,7 @@ namespace WebApplication4.Models
         public string Password { get; set; }
         public int? BookId { get; set; }
         public Book Book { get; set; }
-
+        public List<Permission> Permissions { get; set; }
         public bool ShouldSerializePassword()
         {
             return false;
