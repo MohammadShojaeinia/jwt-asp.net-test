@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebApplication4.Models
 {
@@ -11,9 +9,16 @@ namespace WebApplication4.Models
         [Key]
         public int Id { get; set; }
         public string Name { get; set; }
+        [Index(IsUnique = true)]
+        [MinLength(6), MaxLength(64)]
         public string Username { get; set; }
         public string Password { get; set; }
-        public int BookId { get; set; }
+        public int? BookId { get; set; }
         public Book Book { get; set; }
+
+        public bool ShouldSerializePassword()
+        {
+            return false;
+        }
     }
 }

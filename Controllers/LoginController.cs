@@ -8,6 +8,7 @@ using System.Web.Http;
 using WebApplication4.Context;
 using WebApplication4.Models.Auth;
 using WebApplication4.Models;
+using System.Collections.Generic;
 
 namespace WebApplication4.Controllers
 {
@@ -15,7 +16,7 @@ namespace WebApplication4.Controllers
     {
         private DatabaseContext db = new DatabaseContext();
 
-        [Route("api/v1/login")]
+        [Route("api/v1/user/login")]
         [AcceptVerbs("POST")]
         public IHttpActionResult Authenticate([FromBody] LoginRequest login)
         {
@@ -51,19 +52,22 @@ namespace WebApplication4.Controllers
             DateTime expires = DateTime.UtcNow.AddDays(90);
 
             var tokenHandler = new JwtSecurityTokenHandler();
+            
+            List<Claim> claims = new List<Claim>();
+            claims.Add(new Claim(ClaimTypes.Role, "Admin"));
 
-            ClaimsIdentity claimsIdentity = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, username) });
+            //ClaimsIdentity claimsIdentity = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, username) });
 
             const string sec = "401b09eab3c013d4ca54922bb802bec8fd5318192b0a75f201d8b3727429090fb337591abd3e44453b954555b7a0812e1081c39b740293f765eae731f5a65ed1";
             var now = DateTime.UtcNow;
             var securityKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.Default.GetBytes(sec));
             var signingCredentials = new Microsoft.IdentityModel.Tokens.SigningCredentials(securityKey, Microsoft.IdentityModel.Tokens.SecurityAlgorithms.HmacSha256Signature);
 
-            var signedToken = (JwtSecurityToken)tokenHandler.CreateJwtSecurityToken(
-                subject: claimsIdentity,
+            var signedToken = new JwtSecurityToken(
                 notBefore: issuedAt,
                 expires: expires,
-                signingCredentials: signingCredentials
+                signingCredentials: signingCredentials,
+                claims: claims
             );
 
             AuthToken token = new AuthToken();

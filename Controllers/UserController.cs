@@ -10,14 +10,24 @@ namespace WebApplication4.Controllers
     {
         private DatabaseContext db = new DatabaseContext();
 
-        [Route("")]
+        [Route("api/v1/user/list")]
         [AcceptVerbs("GET")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public IEnumerable<User> GetUsers()
         {
             IEnumerable<User> users = db.Users.Select(u => u);
 
             return users;
+        }
+
+        [Route("api/v1/user/register")]
+        [AcceptVerbs("POST")]
+        public User Register([FromBody] User user)
+        {
+            user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
+            db.Users.Add(user);
+            db.SaveChanges();
+            return user;
         }
     }
 }
