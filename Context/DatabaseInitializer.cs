@@ -10,6 +10,10 @@ namespace WebApplication4.Context
         {
             base.Seed(context);
 
+            Permission p1 = new Permission("Admin");
+            Permission p2 = new Permission("Manager");
+            Permission p3 = new Permission("User");
+
             Book book = new Book();
             book.Title = "folan o bisar";
 
@@ -18,7 +22,7 @@ namespace WebApplication4.Context
             user.Book = book;
             user.Username = "mahsa123";
             user.Password = BCrypt.Net.BCrypt.HashPassword("123123");
-            user.Permissions = new List<Permission> { new Permission("Admin"), new Permission("User") };
+            user.Permissions = new List<Permission> { p2, p3, p1 };
 
             context.Users.Add(user);
             context.SaveChanges();

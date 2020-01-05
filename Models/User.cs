@@ -15,7 +15,8 @@ namespace WebApplication4.Models
         public string Password { get; set; }
         public int? BookId { get; set; }
         public Book Book { get; set; }
-        public List<Permission> Permissions { get; set; }
+        public virtual ICollection<Permission> Permissions { get; set; }
+
         public bool ShouldSerializePassword()
         {
             return false;

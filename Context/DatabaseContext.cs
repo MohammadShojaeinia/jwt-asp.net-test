@@ -8,6 +8,6 @@ namespace WebApplication4.Context
         public DatabaseContext() : base("DefaultConnection") { }
         public DbSet<User> Users { get; set; }
         public DbSet<Book> Books { get; set; }
-
+        public DbSet<Permission> Permissions { get; set; }
     }
 }

@@ -10,7 +10,7 @@ namespace WebApplication4
             config.Formatters.XmlFormatter.SupportedMediaTypes.Clear();
             config.Formatters.JsonFormatter.SerializerSettings.Formatting = Newtonsoft.Json.Formatting.Indented;
             config.Formatters.JsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-
+            
             config.MapHttpAttributeRoutes();
 
             config.MessageHandlers.Add(new TokenValidationHandler());
